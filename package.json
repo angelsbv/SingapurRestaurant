@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "sr": "concurrently -n \"server,client\" -c 'green,blue' \"cd server && dotnet watch run\" \"cd client && npm start\"",
+    "restore": "concurrently -n \"root,server,client\" -c 'red,green,blue' \"npm i\" \"cd server && dotnet restore\" \"cd client && npm i\""
   },
   "repository": {
     "type": "git",
