@@ -32,7 +32,7 @@ namespace server
 
             testDBServerConnection();
 
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -62,7 +62,7 @@ namespace server
                 using (var timeoutCancellationTokenSource = new CancellationTokenSource(TimeSpan.FromMilliseconds(1800)))
                 {
                     await client.ListDatabasesAsync(timeoutCancellationTokenSource.Token);
-                    Console.ForegroundColor = ConsoleColor.Green; 
+                    Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine("[OK] DB connection.");
                 }
             }
@@ -71,7 +71,6 @@ namespace server
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("[FAILED] DB connection.");
             }
-
             Console.ResetColor();
 
         }
