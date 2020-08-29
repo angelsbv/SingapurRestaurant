@@ -1,7 +1,9 @@
 using System;
 using System.Threading;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -32,6 +34,13 @@ namespace server
 
             testDBServerConnection();
 
+            services.Configure<CookiePolicyOptions>(opts => {
+                opts.CheckConsentNeeded = context => true;
+                opts.MinimumSameSitePolicy = SameSiteMode.None;
+                opts.HttpOnly = HttpOnlyPolicy.Always;
+                opts.Secure = CookieSecurePolicy.None;
+            });
+
             services.AddControllers().AddNewtonsoftJson();
         }
 
@@ -44,6 +53,8 @@ namespace server
             }
 
             app.UseRouting();
+
+            app.UseCookiePolicy();
 
             app.UseAuthorization();
 

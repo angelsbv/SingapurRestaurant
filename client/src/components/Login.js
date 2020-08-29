@@ -14,7 +14,10 @@ export default function Register() {
                 },
                 body: JSON.stringify(fields)
             });
+            console.log(data)
+            
             const res = await data.text();
+            console.log(res)
             if(res === "FAIL") setErrorMsg("Papá pusiste la vaina mal coño. BOBO") 
         } catch (error) {
             console.error(error);
