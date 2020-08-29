@@ -1,8 +1,11 @@
 using System;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.IdentityModel.Tokens;
 using server.Models;
 using server.Services;
 
@@ -51,6 +54,22 @@ namespace server.Controllers
             }
             
             return Content(isString ? "OK" : "FAIL");
+        }
+        
+        [HttpPost]
+        [Route("isauthok")]
+        public ActionResult isAuthOk(){
+            var cookie = Request.Cookies["sr-session"];
+            try
+            {
+                _userService.verifyJwtToken(cookie);
+                return Content("OK");
+            }
+            catch
+            {
+                return Content("FAIL");
+                throw;
+            }
         }
     }
 }

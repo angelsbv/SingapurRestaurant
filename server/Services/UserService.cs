@@ -1,3 +1,4 @@
+using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -14,6 +15,8 @@ namespace server.Services
     {
         private const bool V = false;
         private readonly IMongoCollection<User> _users;
+
+        private readonly RSA _rsa = new RSACryptoServiceProvider(2048);
 
         public UserService(ISRDBSettings settings)
         {
@@ -50,16 +53,26 @@ namespace server.Services
         {
             // generate token that is valid for 7 days
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = new RSACryptoServiceProvider(2048);
             var tokenOptions = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[] { new Claim("id", user.Id.ToString()) }),
                 Expires = System.DateTime.UtcNow.AddHours(1),
-                SigningCredentials = new SigningCredentials(new RsaSecurityKey(key), SecurityAlgorithms.RsaSha256)
+                SigningCredentials = new SigningCredentials(new RsaSecurityKey(_rsa), SecurityAlgorithms.RsaSha256Signature)
             };
 
             var token = tokenHandler.CreateToken(tokenOptions);
             return tokenHandler.WriteToken(token);
+        }
+
+        public void verifyJwtToken(string cookie){
+            var tokenHandler = new JwtSecurityTokenHandler();
+            tokenHandler.ValidateToken(cookie, new TokenValidationParameters{
+                ClockSkew = TimeSpan.Zero,
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new RsaSecurityKey(_rsa),
+            }, out SecurityToken validatedToken);
         }
     }
 }
