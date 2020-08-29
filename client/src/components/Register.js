@@ -26,7 +26,7 @@ export default function Register() {
     }
 
     return (
-        <div className="container" style={{ maxWidth: "550px" }}>
+        <div className="container d-flex flex-column justify-content-center" style={{ maxWidth: "550px", minHeight: "90vh" }}>
             <h1 className="text-center">Sign up</h1>
             <form onSubmit={handleFormSubmit}>
                 <div className="form-group">

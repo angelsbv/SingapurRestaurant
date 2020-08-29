@@ -2,19 +2,20 @@ import React, { useState } from 'react'
 
 export default function Register() {
     const [fields, setFields] = useState({});
+    const [errorMsg, setErrorMsg] = useState("");
 
     const handleFormSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await fetch('/user/login', { 
+            const data = await fetch('/user/login', { 
                 method: "POST",
                 headers: {
                     'Content-Type': "application/json"
                 },
                 body: JSON.stringify(fields)
             });
-            const json = await res.text();
-            console.log(json);
+            const res = await data.text();
+            if(res === "FAIL") setErrorMsg("Papá pusiste la vaina mal coño. BOBO") 
         } catch (error) {
             console.error(error);
         }
@@ -26,9 +27,16 @@ export default function Register() {
     }
 
     return (
-        <div className="container" style={{ maxWidth: "550px" }}>
+        <div className="container d-flex flex-column justify-content-center" style={{ maxWidth: "550px", minHeight: "90vh" }}>
             <h1 className="text-center">Log in</h1>
             <form onSubmit={handleFormSubmit}>
+                {
+                    errorMsg !== ""
+                    && 
+                    <div className="alert alert-danger" role="alert">
+                        { errorMsg }
+                    </div>
+                }
                 <div className="form-group">
                     <label htmlFor="username">Username/Email</label>
                     <input
